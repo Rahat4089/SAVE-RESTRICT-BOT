@@ -1,7 +1,6 @@
 """
 ========================================================
-Modified & maintained by: Dhanpal Sharma
-GitHub: https://github.com/LastPerson07
+Modified & maintained by: @still_alivenow
 Purpose: Keep-alive HTTP server for Render / Heroku
 ========================================================
 """
