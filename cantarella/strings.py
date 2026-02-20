@@ -1,8 +1,5 @@
-# cantarella
-# Don't Remove Credit
-# Telegram Channel @cantarellabots
 
-HELP_TXT = """<b>🚀 Welcome to cantarella Save Restricted Bot - Complete Guide</b>
+HELP_TXT = """<b>🚀 Welcome to Save Restricted Bot - Complete Guide</b>
 
 <b>👋 How to Use Me</b>
 <blockquote expandable>
@@ -52,9 +49,9 @@ HELP_TXT = """<b>🚀 Welcome to cantarella Save Restricted Bot - Complete Guide
 <b>💡 Tips</b>
 • Free users: 10 saves/day + 5 files per batch
 • Premium users: Unlimited saves & batch size
-• Contact @cantarellabots for support or premium purchase
+• Contact @still_alivenow for support or premium purchase
 
-<b>Thank you for using cantarella! ❤️</b>
+<b>Thank you for using me! ❤️</b>
 """
 
 COMMANDS_TXT = """<b>📜 All Available Commands</b>
@@ -99,13 +96,6 @@ COMMANDS_TXT = """<b>📜 All Available Commands</b>
 </blockquote>
 
 <b>🔥 Premium = Unlimited Everything</b>
-<i>Contact @cantarellabots to upgrade!</i>
+<i>Contact @still_alivenow to upgrade!</i>
 """
 
-# Dont remove Credits
-# Developer Telegram @about_zani/143
-# Update channel - @cantarellabots
-
-# cantarella
-# Don't Remove Credit
-# Telegram Channel @cantarellabots
