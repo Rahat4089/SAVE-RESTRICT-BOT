@@ -1,8 +1,7 @@
 """
 Logging Configuration
 
-Developed by: LastPerson07 × cantarella
-Telegram: @cantarellabots | @THEUPDATEDGUYS
+Developed by: Kurosaki Ichigo(@still_alivenow)
 """
 
 import logging
