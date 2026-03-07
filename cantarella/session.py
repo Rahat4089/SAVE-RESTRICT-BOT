@@ -1,5 +1,4 @@
-# Developed by: LastPerson07 × cantarella
-# Telegram: @cantarellabots | @THEUPDATEDGUYS
+
 
 import asyncio
 from pyrogram import Client, filters
