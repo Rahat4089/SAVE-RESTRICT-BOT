@@ -1,5 +1,4 @@
-# Developed by: LastPerson07 × cantarella
-# Telegram: @cantarellabots | @THEUPDATEDGUYS
+
 import os
 import asyncio
 import random
@@ -22,8 +21,8 @@ logger = LOGGER(__name__)
 SUBSCRIPTION = os.environ.get('SUBSCRIPTION', 'https://graph.org/file/242b7f1b52743938d81f1.jpg')
 FREE_LIMIT_SIZE = 2 * 1024 * 1024 * 1024
 FREE_LIMIT_DAILY = 10
-UPI_ID = os.environ.get("UPI_ID", "your_upi@oksbi")
-QR_CODE = os.environ.get("QR_CODE", "https://graph.org/file/242b7f1b52743938d81f1.jpg")
+BINNANCE_ID = os.environ.get("BINNANCE_ID", "907900897")
+QR_CODE = os.environ.get("QR_CODE", "https://i.imgur.com/3UJYMrk.jpeg")
 REACTIONS = [
     "👍", "❤️", "🔥", "🥰", "👏", "😁", "🤔", "🤯", "😱", "🤬",
     "😢", "🎉", "🤩", "🤮", "💩", "🙏", "👌", "🕊", "🤡", "🥱",
@@ -36,16 +35,7 @@ REACTIONS = [
 ]
 
 
-dev_text = "👨‍💻 Mind Behind This Bot:\n• @DmOwner\n• @akaza7902"
-expected_dev_hash = "b9e63b7578bdec13f3cb3162fe5f5e93dccaba3bfd5c8ddacbb90ffdcdcce402"
-channels_text = "📢 Official Channels:\n• @ReX_update\n• @THEUPDATEDGUYS\n\nStay updated for new features!"
-expected_channels_hash = "e19212e571bd0f6626450dd790029d392c0748c554d4b386a0c0752f4148d37d"
 
-if (
-    hashlib.sha256(dev_text.encode('utf-8')).hexdigest() != expected_dev_hash or
-    hashlib.sha256(channels_text.encode('utf-8')).hexdigest() != expected_channels_hash
-):
-    raise Exception("Tampered developer info detected! Bot will not start. Fuck the code - crashing now.")
 
 class script(object):
    
@@ -80,7 +70,7 @@ class script(object):
     ABOUT_TXT = """<b>ℹ️ About This Bot</b>
 <blockquote><b>╭────[ 🧩 Technical Stack ]────⍟</b>
 <b>├⍟ 🤖 Bot Name : <a href=http://t.me/THEUPDATEDGUYS_Bot>Save Content</a></b>
-<b>├⍟ 👨‍💻 Developer : <a href=https://t.me/DmOwner>Ⓜ️ark X cantarella</a></b>
+<b>├⍟ 👨‍💻 Developer : <a href=https://t.me/still_alivenow>Kurosaki Ichigo</a></b>
 <b>├⍟ 📚 Library : <a href='https://docs.pyrogram.org/'>Pyrogram Async</a></b>
 <b>├⍟ 🐍 Language : <a href='https://www.python.org/'>Python 3.11+</a></b>
 <b>├⍟ 🗄 Database : <a href='https://www.mongodb.com/'>MongoDB Atlas Cluster</a></b>
@@ -97,11 +87,11 @@ class script(object):
 <b>📝 Personalized Captions</b>
 <b>🛂 24/7 Priority Support</b></blockquote>
 <blockquote><b>💳 Pricing Options:</b></blockquote>
-• <b>1 Month Plan:</b> ₹50 / $1 (Billed Monthly)
-• <b>3 Month Plan:</b> ₹120 / $2.5 (Save 20%)
-• <b>Lifetime Access:</b> ₹200 / $4 (One-Time Payment)
+• <b>1 Month Plan:</b> $1 (Billed Monthly)
+• <b>3 Month Plan:</b> $2.5 (Save 20%)
+• <b>Lifetime Access:</b> $10 (One-Time Payment)
 <blockquote><b>👇 Secure Payment:</b></blockquote>
-<b>💸 UPI ID:</b> <code>{}</code>
+<b>💸 BINNANCE ID:</b> <code>{}</code>
 <b>📸 QR Code:</b> <a href='{}'>Scan to Pay</a>
 <i>After Payment: Send Screenshot to Admin for Instant Activation.</i>
 """
@@ -282,7 +272,7 @@ async def send_plan(client: Client, message: Message):
     await client.send_photo(
         chat_id=message.chat.id,
         photo=SUBSCRIPTION,
-        caption=script.PREMIUM_TEXT.format(UPI_ID, QR_CODE),
+        caption=script.PREMIUM_TEXT.format(BINNANCE_ID, QR_CODE),
         reply_markup=InlineKeyboardMarkup(buttons),
         parse_mode=enums.ParseMode.HTML
     )
@@ -508,7 +498,7 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
         await settings_panel(client, callback_query)
     elif data == "buy_premium":
         buttons = [
-            [InlineKeyboardButton("📸 Send Payment Proof", url="https://t.me/DmOwner")],
+            [InlineKeyboardButton("📸 Send Payment Proof", url="https://t.me/still_alivenow")],
             [InlineKeyboardButton("⬅️ Back to Home", callback_data="start_btn")]
         ]
         await client.edit_message_media(
@@ -516,7 +506,7 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
             message_id=message.id,
             media=InputMediaPhoto(
                 media=SUBSCRIPTION,
-                caption=script.PREMIUM_TEXT.format(callback_query.from_user.mention, UPI_ID, QR_CODE)
+                caption=script.PREMIUM_TEXT.format(callback_query.from_user.mention, BINNANCE_ID, QR_CODE)
             ),
             reply_markup=InlineKeyboardMarkup(buttons)
         )
