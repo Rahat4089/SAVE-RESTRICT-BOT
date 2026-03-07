@@ -1,7 +1,3 @@
-# cantarella
-# Don't Remove Credit
-# Telegram Channel @cantarellabots
-
 
 
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
@@ -164,11 +160,3 @@ async def users_count(bot: Client, message: Message):
         await msg.edit_text(f"**__⚠️ Error Fetching User Data:__**\n<code>{e}</code>")
         logger.error(f"[!] /users error: {e}")
 
-
-# Credits
-# Developer Telegram: @cantarellabots
-# Update channel: @cantarellabots
-
-# cantarella
-# Don't Remove Credit
-# Telegram Channel @cantarellabots
