@@ -16,8 +16,7 @@ HELP_TXT = """<b>🚀 Welcome to Save Restricted Bot - Complete Guide</b>
 • Custom captions with {filename} & {size} placeholders
 • Custom thumbnails
 • Auto-forward to your dump chat
-• Daily token system (10 saves/day for free users)
-• Premium = unlimited everything ♾️
+• Unlimited saves for all users ♾️
 </blockquote>
 
 <b>📱 User Commands</b>
@@ -32,7 +31,7 @@ HELP_TXT = """<b>🚀 Welcome to Save Restricted Bot - Complete Guide</b>
 <blockquote><b>/cancel</b> — Cancel ongoing batch save</blockquote>
 
 <blockquote><b>/myplan</b> — View your plan status & quota</blockquote>
-<blockquote><b>/premium</b> — Premium plans & benefits</blockquote>
+<blockquote><b>/premium</b> — Access policy (now unlimited)</blockquote>
 
 <blockquote><b>/setchat &lt;chat_id&gt;</b> — Set dump chat (auto-forward saved files)</blockquote>
 <blockquote><b>/setchat clear</b> — Remove dump chat</blockquote>
@@ -47,9 +46,8 @@ HELP_TXT = """<b>🚀 Welcome to Save Restricted Bot - Complete Guide</b>
 <blockquote><b>/thumb_mode</b> — Check thumbnail status</blockquote>
 
 <b>💡 Tips</b>
-• Free users: 10 saves/day + 5 files per batch
-• Premium users: Unlimited saves & batch size
-• Contact @still_alivenow for support or premium purchase
+• All users have unlimited saves and batch access
+• Contact @still_alivenow for support
 
 <b>Thank you for using me! ❤️</b>
 """
@@ -71,7 +69,7 @@ COMMANDS_TXT = """<b>📜 All Available Commands</b>
 <b>💎 Plan & Quota</b>
 <blockquote>
 /myplan — Your plan status
-/premium — Upgrade options
+/premium — Access policy
 </blockquote>
 
 <b>📤 Dump Chat</b>
@@ -95,7 +93,6 @@ COMMANDS_TXT = """<b>📜 All Available Commands</b>
 /thumb_mode — Status
 </blockquote>
 
-<b>🔥 Premium = Unlimited Everything</b>
-<i>Contact @still_alivenow to upgrade!</i>
+<b>🔥 Unlimited Access Is Enabled For Everyone</b>
 """
 
