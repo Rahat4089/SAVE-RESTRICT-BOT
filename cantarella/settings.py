@@ -12,9 +12,7 @@ async def settings_menu(client: Client, message: Message):
     # Ensure user exists (Safe Call)
     if not await db.is_user_exist(user_id):
         await db.add_user(user_id, message.from_user.first_name)
-    # Fetch real status
-    is_premium = await db.check_premium(user_id)
-    premium_badge = "💎 Premium Member" if is_premium else "👤 Free User"
+    access_badge = "✅ Unlimited Access"
     buttons = InlineKeyboardMarkup([
         [InlineKeyboardButton("📜 Commands List", callback_data="cmd_list_btn")],
         [InlineKeyboardButton("📊 My Usage Stats", callback_data="user_stats_btn")],
@@ -28,7 +26,7 @@ async def settings_menu(client: Client, message: Message):
     text = (
         f"<b>⚙️ Settings Panel</b>\n"
         f"━━━━━━━━━━━━━━━━━━\n"
-        f"<b>Account:</b> {premium_badge}\n"
+        f"<b>Account:</b> {access_badge}\n"
         f"<b>User ID:</b> <code>{user_id}</code>\n\n"
         f"<i>Select an option below to customize your experience.</i>"
     )
@@ -161,30 +159,21 @@ async def settings_callbacks(client: Client, callback_query: CallbackQuery):
         await callback_query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(back_close), parse_mode=enums.ParseMode.HTML)
     elif data == "user_stats_btn":
         # Fetch real stats from DB
-        is_premium = await db.check_premium(user_id)
         user_data = await db.col.find_one({'id': int(user_id)})
-       
-        if is_premium:
-            limit_text = "♾️ Unlimited"
-            usage_text = "Ignored (Premium)"
-        else:
-            # Free user logic
-            daily_limit = 10
-            used = user_data.get('daily_usage', 0)
-            limit_text = f"{daily_limit} Files / 24h"
-            usage_text = f"{used} / {daily_limit}"
+        used = user_data.get('daily_usage', 0)
+        limit_text = "♾️ Unlimited"
+        usage_text = f"{used} (tracked)"
         text = (
             f"<b>📊 My Usage Statistics</b>\n\n"
-            f"<b>Plan:</b> {'💎 Premium' if is_premium else '👤 Free'}\n"
+            f"<b>Plan:</b> ✅ Unlimited for all users\n"
             f"<b>Daily Limit:</b> <code>{limit_text}</code>\n"
             f"<b>Today's Usage:</b> <code>{usage_text}</code>\n\n"
-            f"<i>Upgrade to Premium for unlimited downloads!</i>"
+            f"<i>All restrictions are disabled.</i>"
         )
         await callback_query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(back_close), parse_mode=enums.ParseMode.HTML)
     elif data == "settings_back_btn":
         # Re-render main menu
-        is_premium = await db.check_premium(user_id)
-        premium_badge = "💎 Premium Member" if is_premium else "👤 Free User"
+        access_badge = "✅ Unlimited Access"
        
         buttons = InlineKeyboardMarkup([
             [InlineKeyboardButton("📜 Commands List", callback_data="cmd_list_btn")],
@@ -200,7 +189,7 @@ async def settings_callbacks(client: Client, callback_query: CallbackQuery):
         text = (
             f"<b>⚙️ Settings Panel</b>\n"
             f"━━━━━━━━━━━━━━━━━━\n"
-            f"<b>Account:</b> {premium_badge}\n"
+            f"<b>Account:</b> {access_badge}\n"
             f"<b>User ID:</b> <code>{user_id}</code>\n\n"
             f"<i>Select an option below to customize your experience.</i>"
         )

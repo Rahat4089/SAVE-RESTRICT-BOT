@@ -45,16 +45,15 @@
 - Set custom thumbnails (`/set_thumb`)
 - Auto-delete or replace specific words
 
-### 💎 Premium System
+### ✅ Access Model
 
-- Built-in system for free and premium users
-- Admin-controlled premium access
+- Unlimited access for all users (no premium gating)
 
 ### 👑 Admin Tools
 
 - Broadcast messages
 - Ban / Unban users
-- Manage premium status
+- Manage users, bans, and broadcasts
 
 ### 🧠 Persistent Storage
 
@@ -153,7 +152,7 @@ docker run -d --env-file .env save-restricted-bot
 | `/cancel`   | Cancel batch process     |
 | `/settings` | Open settings menu       |
 | `/myplan`   | Check your current plan  |
-| `/premium`  | View premium details     |
+| `/premium`  | View access policy       |
 
 ### ⚙️ Customization
 
@@ -181,9 +180,7 @@ docker run -d --env-file .env save-restricted-bot
 
 - `/broadcast`
 - `/ban` / `/unban`
-- `/add_premium` / `/remove_premium`
 - `/users`
-- `/premium_users`
 - `/set_dump`
 - `/dblink`
 

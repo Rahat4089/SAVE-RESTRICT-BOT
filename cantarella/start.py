@@ -19,8 +19,6 @@ import math
 from logger import LOGGER
 logger = LOGGER(__name__)
 SUBSCRIPTION = os.environ.get('SUBSCRIPTION', 'https://graph.org/file/242b7f1b52743938d81f1.jpg')
-FREE_LIMIT_SIZE = 2 * 1024 * 1024 * 1024
-FREE_LIMIT_DAILY = 10
 BINNANCE_ID = os.environ.get("BINNANCE_ID", "907900897")
 QR_CODE = os.environ.get("QR_CODE", "https://i.imgur.com/3UJYMrk.jpeg")
 REACTIONS = [
@@ -60,12 +58,9 @@ class script(object):
 <blockquote><b>3️⃣ Batch Downloading Mode</b></blockquote>
 • Initiate with <code>/batch</code> for multiple files.
 • Follow interactive prompts for seamless processing.
-<blockquote><b>🛑 Free User Limitations:</b></blockquote>
-• <b>Daily Quota:</b> 10 Files / 24 Hours
-• <b>File Size Cap:</b> 2GB Maximum
-<blockquote><b>💎 Premium Membership Benefits:</b></blockquote>
-• Unlimited Downloads & No Restrictions.
-• Priority Support & Advanced Features.
+<blockquote><b>✅ Access Policy</b></blockquote>
+• All users have unlimited saves.
+• No premium unlock required.
 """
     ABOUT_TXT = """<b>ℹ️ About This Bot</b>
 <blockquote><b>╭────[ 🧩 Technical Stack ]────⍟</b>
@@ -77,23 +72,15 @@ class script(object):
 <b>├⍟ 📡 Hosting : Dedicated High-Speed VPS</b>
 <b>╰───────────────⍟</b></blockquote>
 """
-    PREMIUM_TEXT = """<b>💎 Premium Membership Plans</b>
-<b>Unlock Unlimited Access & Advanced Features!</b>
-<blockquote><b>✨ Key Benefits:</b>
-<b>♾️ Unlimited Daily Downloads</b>
-<b>📂 Support for 4GB+ File Sizes</b>
-<b>⚡ Instant Processing (Zero Delay)</b>
-<b>🖼 Customizable Thumbnails</b>
-<b>📝 Personalized Captions</b>
-<b>🛂 24/7 Priority Support</b></blockquote>
-<blockquote><b>💳 Pricing Options:</b></blockquote>
-• <b>1 Month Plan:</b> $1 (Billed Monthly)
-• <b>3 Month Plan:</b> $2.5 (Save 20%)
-• <b>Lifetime Access:</b> $10 (One-Time Payment)
-<blockquote><b>👇 Secure Payment:</b></blockquote>
-<b>💸 BINNANCE ID:</b> <code>{}</code>
-<b>📸 QR Code:</b> <a href='{}'>Scan to Pay</a>
-<i>After Payment: Send Screenshot to Admin for Instant Activation.</i>
+    PREMIUM_TEXT = """<b>✅ Unlimited Access Enabled</b>
+<b>All users can use every feature without premium.</b>
+<blockquote><b>Included for everyone:</b>
+<b>♾️ Unlimited Daily Saves</b>
+<b>📂 Large File Support</b>
+<b>⚡ Fast Processing</b>
+<b>🖼 Custom Thumbnails</b>
+<b>📝 Custom Captions</b></blockquote>
+<i>No upgrade is required.</i>
 """
     PROGRESS_BAR = """\
 <b>⚡ Processing Task...</b>
@@ -106,17 +93,6 @@ class script(object):
 </blockquote>
 """
     CAPTION = """<b><a href="https://t.me/THEUPDATEDGUYS"></a></b>\n\n<b>⚜️ Powered By : <a href="https://t.me/THEUPDATEDGUYS">THE UPDATED GUYS 😎</a></b>"""
-    LIMIT_REACHED = """<b>🚫 Daily Limit Exceeded</b>
-<b>Your 10 free saves for today have been used.</b>
-<i>Quota resets automatically after 24 hours from first download.</i>
-<blockquote><b>🔓 Upgrade to Premium for Unlimited Access!</b></blockquote>
-Remove all restrictions and enjoy seamless downloading.
-"""
-    SIZE_LIMIT = """<b>⚠️ File Size Exceeded</b>
-<b>Free tier limited to 2GB per file.</b>
-<blockquote><b>🔓 Upgrade to Premium</b></blockquote>
-Download files up to 4GB and beyond with no limits!
-"""
 def humanbytes(size):
     if not size:
         return "0B"
@@ -232,7 +208,7 @@ async def send_start(client: Client, message: Message):
         photo_url = "https://i.postimg.cc/kX9tjGXP/16.png"
     buttons = [
         [
-            InlineKeyboardButton("💎 Buy Premium", callback_data="buy_premium"),
+            InlineKeyboardButton("✅ Access Info", callback_data="access_info"),
             InlineKeyboardButton("🆘 Help & Guide", callback_data="help_btn")
         ],
         [
@@ -266,13 +242,13 @@ async def send_help(client: Client, message: Message):
 @Client.on_message(filters.command(["plan", "myplan", "premium"]))
 async def send_plan(client: Client, message: Message):
     buttons = [
-        [InlineKeyboardButton("📸 Send Payment Proof", url="https://t.me/DmOwner")],
+        [InlineKeyboardButton("🆘 Support", url="https://t.me/DmOwner")],
         [InlineKeyboardButton("❌ Close Menu", callback_data="close_btn")]
     ]
     await client.send_photo(
         chat_id=message.chat.id,
         photo=SUBSCRIPTION,
-        caption=script.PREMIUM_TEXT.format(BINNANCE_ID, QR_CODE),
+        caption=script.PREMIUM_TEXT,
         reply_markup=InlineKeyboardMarkup(buttons),
         parse_mode=enums.ParseMode.HTML
     )
@@ -285,8 +261,7 @@ async def settings_panel(client, callback_query):
     Renders the Settings Menu with professional layout.
     """
     user_id = callback_query.from_user.id
-    is_premium = await db.check_premium(user_id)
-    badge = "💎 Premium Member" if is_premium else "👤 Standard User"
+    badge = "✅ Unlimited Access"
    
     buttons = InlineKeyboardMarkup([
         [InlineKeyboardButton("📜 Command List", callback_data="cmd_list_btn")],
@@ -307,16 +282,6 @@ async def settings_panel(client, callback_query):
 @Client.on_message(filters.text & filters.private & ~filters.regex("^/"))
 async def save(client: Client, message: Message):
     if "https://t.me/" in message.text:
-       
-        is_limit_reached = await db.check_limit(message.from_user.id)
-        if is_limit_reached:
-            btn = InlineKeyboardMarkup([[InlineKeyboardButton("💎 Upgrade to Premium", callback_data="buy_premium")]])
-            return await message.reply_photo(
-                photo=SUBSCRIPTION,
-                caption=script.LIMIT_REACHED,
-                reply_markup=btn,
-                parse_mode=enums.ParseMode.HTML
-            )
        
         if batch_temp.IS_BATCH.get(message.from_user.id) == False:
             return await message.reply_text("<b>⚠️ A Task is Currently Processing.</b>\n<i>Please wait for completion or use /cancel to stop.</i>", parse_mode=enums.ParseMode.HTML)
@@ -401,16 +366,6 @@ async def handle_restricted_content(client: Client, acc, message: Message, chat_
     elif msg_type == "Video": file_size = msg.video.file_size
     elif msg_type == "Audio": file_size = msg.audio.file_size
    
-    if file_size > FREE_LIMIT_SIZE:
-        if not await db.check_premium(message.from_user.id):
-            btn = InlineKeyboardMarkup([[InlineKeyboardButton("💎 Upgrade to Premium", callback_data="buy_premium")]])
-            await client.send_message(
-                message.chat.id,
-                script.SIZE_LIMIT,
-                reply_markup=btn,
-                parse_mode=enums.ParseMode.HTML
-            )
-            return
     if msg_type == "Text":
         try:
             await client.send_message(message.chat.id, msg.text, entities=msg.entities, parse_mode=enums.ParseMode.HTML)
@@ -496,9 +451,9 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
         )
     elif data == "settings_btn":
         await settings_panel(client, callback_query)
-    elif data == "buy_premium":
+    elif data == "access_info":
         buttons = [
-            [InlineKeyboardButton("📸 Send Payment Proof", url="https://t.me/still_alivenow")],
+            [InlineKeyboardButton("🆘 Support", url="https://t.me/still_alivenow")],
             [InlineKeyboardButton("⬅️ Back to Home", callback_data="start_btn")]
         ]
         await client.edit_message_media(
@@ -506,7 +461,7 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
             message_id=message.id,
             media=InputMediaPhoto(
                 media=SUBSCRIPTION,
-                caption=script.PREMIUM_TEXT.format(callback_query.from_user.mention, BINNANCE_ID, QR_CODE)
+                caption=script.PREMIUM_TEXT
             ),
             reply_markup=InlineKeyboardMarkup(buttons)
         )
@@ -542,7 +497,7 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
             photo_url = "https://i.postimg.cc/cC7txyhz/15.png"
         buttons = [
             [
-                InlineKeyboardButton("💎 Buy Premium", callback_data="buy_premium"),
+                InlineKeyboardButton("✅ Access Info", callback_data="access_info"),
                 InlineKeyboardButton("🆘 Help & Guide", callback_data="help_btn")
             ],
             [

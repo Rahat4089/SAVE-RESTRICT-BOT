@@ -59,28 +59,6 @@ class Database:
     # cantarella / Modified by You
     # Don't Remove Credit
     # Telegram Channel @cantarellabots
-    # Premium Support
-    async def add_premium(self, id, expiry_date):
-        # When user buys premium, we also reset their limits just in case
-        await self.col.update_one({'id': int(id)}, {
-            '$set': {
-                'is_premium': True,
-                'premium_expiry': expiry_date,
-                'daily_usage': 0,
-                'limit_reset_time': None
-            }
-        })
-        logger.info(f"User {id} granted premium until {expiry_date}")
-    async def remove_premium(self, id):
-        await self.col.update_one({'id': int(id)}, {'$set': {'is_premium': False, 'premium_expiry': None}})
-        logger.info(f"User {id} removed from premium")
-    async def check_premium(self, id):
-        user = await self.col.find_one({'id': int(id)})
-        if user and user.get('is_premium'):
-            return user.get('premium_expiry')
-        return None
-    async def get_premium_users(self):
-        return self.col.find({'is_premium': True})
     # Ban Support
     async def ban_user(self, id):
         await self.col.update_one({'id': int(id)}, {'$set': {'is_banned': True}})
@@ -124,17 +102,14 @@ class Database:
     # --------------------------------------------------------
     async def check_limit(self, id):
         """
-        Checks if a user has hit their daily limit.
-        Returns: True if BLOCKED (limit reached), False if ALLOWED.
+        Retained for backward compatibility with existing handlers.
+        Daily limits are disabled, so users are always allowed.
         """
         user = await self.col.find_one({'id': int(id)})
         if not user:
             return False # Should be added via add_user, but safe fallback
        
-        # 1. Premium Check: Always allowed
-        if user.get('is_premium'):
-            return False
-        # 2. Check Time Reset
+        # Keep usage window maintenance for stats while never blocking.
         now = datetime.datetime.now()
         reset_time = user.get('limit_reset_time')
        
@@ -144,13 +119,8 @@ class Database:
                 {'id': int(id)},
                 {'$set': {'daily_usage': 0, 'limit_reset_time': None}}
             )
-            return False # Allowed (count is 0)
-        # 3. Check Count
-        usage = user.get('daily_usage', 0)
-        if usage >= 10:
-            return True # Blocked
-       
-        return False # Allowed
+            return False
+        return False
     async def add_traffic(self, id):
         """
         Increments usage count.
@@ -158,9 +128,6 @@ class Database:
         """
         user = await self.col.find_one({'id': int(id)})
        
-        # If premium, do nothing or track stats if you want (currently strictly for limit logic)
-        if user.get('is_premium'):
-            return
         now = datetime.datetime.now()
         reset_time = user.get('limit_reset_time')
         # Logic: If timer is not running (None), start it for 24 hours from NOW.
