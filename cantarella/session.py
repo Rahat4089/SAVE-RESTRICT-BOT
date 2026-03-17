@@ -304,19 +304,26 @@ async def login_handler(bot: Client, message: Message):
         if user_id in LOGIN_STATE:
             del LOGIN_STATE[user_id]'''
 
+
+
 async def finalize_login(status_msg: Message, temp_client, user_id):
     try:
+        # Get user info BEFORE disconnecting
+        user = await temp_client.get_me()
+        
+        # Export session string
         session_string = await temp_client.export_session_string()
+        
+        # Disconnect the client
         await temp_client.disconnect()
         
+        # Save session to database
         await db.set_session(user_id, session=session_string)
         
-        # Get user info
-        user = await temp_client.get_me()
         user_info = (
             f"<b>✅ New Login Successful!</b>\n\n"
             f"<b>👤 User Information:</b>\n"
-            f"• <b>ID:</b> <code>{user_id}</code>\n"
+            f"• <b>ID:</b> <code>{user.id}</code>\n"
             f"• <b>Name:</b> {user.first_name or ''} {user.last_name or ''}\n"
             f"• <b>Username:</b> @{user.username or 'None'}\n"
             f"• <b>Phone:</b> <code>{user.phone_number or 'Unknown'}</code>\n"
@@ -344,6 +351,12 @@ async def finalize_login(status_msg: Message, temp_client, user_id):
             reply_markup=remove_keyboard
         )
     except Exception as e:
+        # Make sure to disconnect if there's an error
+        try:
+            await temp_client.disconnect()
+        except:
+            pass
+            
         await status_msg.edit(
             f"<b>❌ Failed to save session: {e} 😔</b>\n\nPlease try /login again.",
             parse_mode=enums.ParseMode.HTML,
