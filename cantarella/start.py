@@ -64,7 +64,7 @@ class script(object):
 """
     ABOUT_TXT = """<b>ℹ️ About This Bot</b>
 <blockquote><b>╭────[ 🧩 Technical Stack ]────⍟</b>
-<b>├⍟ 🤖 Bot Name : <a href=http://t.me/THEUPDATEDGUYS_Bot>Save Content</a></b>
+<b>├⍟ 🤖 Bot Name : <a href=http://t.me/genzsaverestrictedbot>SAVE RESTRICTED BOT</a></b>
 <b>├⍟ 👨‍💻 Developer : <a href=https://t.me/still_alivenow>Kurosaki Ichigo</a></b>
 <b>├⍟ 📚 Library : <a href='https://docs.pyrogram.org/'>Pyrogram Async</a></b>
 <b>├⍟ 🐍 Language : <a href='https://www.python.org/'>Python 3.11+</a></b>
@@ -92,7 +92,7 @@ class script(object):
 <b>⏳ ETA:</b> <code>{eta}</code>
 </blockquote>
 """
-    CAPTION = """<b><a href="https://t.me/THEUPDATEDGUYS"></a></b>\n\n<b>⚜️ Powered By : <a href="https://t.me/THEUPDATEDGUYS">THE UPDATED GUYS 😎</a></b>"""
+    CAPTION = """<b>⚜️ Powered By : <a href="https://t.me/still_alivenow">Kurosaki Ichigo</a></b>"""
 def humanbytes(size):
     if not size:
         return "0B"
@@ -214,10 +214,6 @@ async def send_start(client: Client, message: Message):
         [
             InlineKeyboardButton("⚙️ Settings Panel", callback_data="settings_btn"),
             InlineKeyboardButton("ℹ️ About Bot", callback_data="about_btn")
-        ],
-        [
-            InlineKeyboardButton('📢 Channels', callback_data="channels_info"),
-            InlineKeyboardButton('👨‍💻 Developers', callback_data="dev_info")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(buttons)
@@ -242,7 +238,7 @@ async def send_help(client: Client, message: Message):
 @Client.on_message(filters.command(["plan", "myplan", "premium"]))
 async def send_plan(client: Client, message: Message):
     buttons = [
-        [InlineKeyboardButton("🆘 Support", url="https://t.me/DmOwner")],
+        [InlineKeyboardButton("🆘 Support", url="https://t.me/still_alivenow")],
         [InlineKeyboardButton("❌ Close Menu", callback_data="close_btn")]
     ]
     await client.send_photo(
@@ -439,17 +435,7 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
     message = callback_query.message
     if not message: return
    # --- DEVELOPER INFO ---
-    if data == "dev_info":
-        await callback_query.answer(
-            text=dev_text,
-            show_alert=True
-        )
-    elif data == "channels_info":
-        await callback_query.answer(
-            text=channels_text,
-            show_alert=True
-        )
-    elif data == "settings_btn":
+    if data == "settings_btn":
         await settings_panel(client, callback_query)
     elif data == "access_info":
         buttons = [
@@ -503,10 +489,6 @@ async def button_callbacks(client: Client, callback_query: CallbackQuery):
             [
                 InlineKeyboardButton("⚙️ Settings Panel", callback_data="settings_btn"),
                 InlineKeyboardButton("ℹ️ About Bot", callback_data="about_btn")
-            ],
-            [
-                InlineKeyboardButton('📢 Channels', callback_data="channels_info"),
-                InlineKeyboardButton('👨‍💻 Developers', callback_data="dev_info")
             ]
         ]
         await client.edit_message_media(
